@@ -4,22 +4,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using aspCoreTraining.Data;
 using aspCoreTraining.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace aspCoreTraining.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext dbContext;
-        public CoursesController(ApplicationDbContext dbContext)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public CoursesController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
         {
             this.dbContext = dbContext;
+            _userManager = userManager;
         }
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
         // GET: CoursesController
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var c = await dbContext.Courses.ToListAsync();
+            return View(c);
         }
 
         // GET: CoursesController/Details/5
@@ -27,6 +34,47 @@ namespace aspCoreTraining.Controllers
         {
             return View();
         }
+
+        public async Task<ActionResult> Lectures(int id)
+        {
+           var result = await dbContext.Lectures.Where(l => l.CourseId == id).ToListAsync();
+            return View(result);
+        }
+       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<ActionResult> AttendLecture(int id,int courseId)
+        {
+            var user = await GetCurrentUserAsync();
+            
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    //dbContext.Courses.FindById(c=>c.id=id);
+                    var _lecture = await dbContext.Lectures.SingleOrDefaultAsync(c => c.Id == id);
+
+                    var sl = new LectureStudent
+                    {
+                        LectureId = _lecture.Id,
+                        ApplicationUserId =user?.Id
+                    };
+                    
+                    // dbContext.Courses
+                    dbContext.LectureStudents.Add(sl);
+                    await dbContext.SaveChangesAsync();
+                    return RedirectToAction("Lectures",new { id = courseId });
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View();
+            }
+        }
+
 
         // GET: CoursesController/Create
         public ActionResult Create()
@@ -37,7 +85,7 @@ namespace aspCoreTraining.Controllers
         // POST: CoursesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Course course )
+        public ActionResult Create(Lecture lecture )
         {
             try
             {
@@ -45,8 +93,8 @@ namespace aspCoreTraining.Controllers
                 {
                     var lect = new Lecture
                     {
-                        Course = course,
-                        Name = "lecture1"
+                        Course = lecture.Course,
+                        Name = lecture.Name
                     };
                     dbContext.Lectures.Add(lect);
                     dbContext.SaveChanges();
@@ -61,22 +109,35 @@ namespace aspCoreTraining.Controllers
         }
 
         // GET: CoursesController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+          var c=   await dbContext.Courses.SingleOrDefaultAsync(c => c.Id == id);
+            return View(c);
         }
 
         // POST: CoursesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(Course course)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    //dbContext.Courses.FindById(c=>c.id=id);
+                    var _course = await dbContext.Courses.AsNoTracking().SingleOrDefaultAsync(c => c.Id == course.Id);
+                  
+                    _course = course;
+                    // dbContext.Courses
+                    dbContext.Update(_course);
+                    await dbContext.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View();
             }
-            catch
+            catch(Exception ex)
             {
+                ModelState.AddModelError(string.Empty,ex.Message);
                 return View();
             }
         }
@@ -101,5 +162,8 @@ namespace aspCoreTraining.Controllers
                 return View();
             }
         }
+    
+    
+         
     }
 }
