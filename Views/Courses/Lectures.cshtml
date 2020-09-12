@@ -6,7 +6,7 @@
 }
 
 <h1>Lectures</h1>
-
+<p class="text-danger">@TempData["ErrorMessage"]</p>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -26,39 +26,39 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CourseId)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Attend", "AttendLecture", new { id = item.Id })
-                <a href="javascript:attend('@item.Id')">attend zz</a>
-                <form id="selectLanguage" asp-route-id="@item.Id" asp-route-courseId="@item.CourseId" asp-controller="Courses" asp-action="AttendLecture" 
-                      asp-route-returnUrl="@Context.Request.Path" method="post" role="form">
-                            <button type="submit" name="culture" value="Attends">
-                                attendxx
-                            </button>
-                </form>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseId)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Attend", "AttendLecture", new { id = item.Id })
+                    <a href="javascript:attend('@item.Id')">attend zz</a>
+                    <form id="selectLanguage" asp-route-id="@item.Id" asp-route-courseId="@item.CourseId" asp-controller="Courses" asp-action="AttendLecture"
+                          asp-route-returnUrl="@Context.Request.Path" method="post" role="form">
+                        <button type="submit" name="culture" value="Attends">
+                            attendxx
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <script type="text/javascript">
 
-    function attend(id)
-    {
-        $.post("/Courses/AttendLecture/"+id)
+    function attend(id) {
+        $.post("/Courses/AttendLecture/" + id)
             .done(function (data) {
                 location.reload();
             });

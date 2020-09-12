@@ -47,7 +47,13 @@ namespace aspCoreTraining.Controllers
         public async Task<ActionResult> AttendLecture(int id,int courseId)
         {
             var user = await GetCurrentUserAsync();
-            
+            var isAttendbefore = await dbContext.LectureStudents.AnyAsync(s => s.LectureId == id && s.ApplicationUserId == user.Id);
+            if (isAttendbefore)
+            {
+                TempData["ErrorMessage"] = "You are already attended";
+                return RedirectToAction("Lectures", new { id = courseId });
+            }
+
             try
             {
                 if (ModelState.IsValid)
@@ -71,7 +77,7 @@ namespace aspCoreTraining.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
+                return RedirectToAction("Lectures", new { id = courseId });
             }
         }
 

@@ -32,7 +32,7 @@ namespace aspCoreTraining
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             // To disable account confirm set: RequireConfirmedAccount=false
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();

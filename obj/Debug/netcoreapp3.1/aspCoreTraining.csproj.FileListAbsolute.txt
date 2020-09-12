@@ -200,3 +200,6 @@ C:\Users\sayee\source\repos\aspCoreTraining\aspCoreTraining\obj\Debug\netcoreapp
 C:\Users\sayee\source\repos\aspCoreTraining\aspCoreTraining\obj\Debug\netcoreapp3.1\Razor\Views\Courses\Index.cshtml.g.cs
 C:\Users\sayee\source\repos\aspCoreTraining\aspCoreTraining\obj\Debug\netcoreapp3.1\Razor\Views\Courses\Edit.cshtml.g.cs
 C:\Users\sayee\source\repos\aspCoreTraining\aspCoreTraining\obj\Debug\netcoreapp3.1\Razor\Views\Courses\Lectures.cshtml.g.cs
+C:\Users\sayee\source\repos\aspCoreTraining\aspCoreTraining\obj\Debug\netcoreapp3.1\Razor\Views\Lectures\Index.cshtml.g.cs
+C:\Users\sayee\source\repos\aspCoreTraining\aspCoreTraining\obj\Debug\netcoreapp3.1\Razor\Views\Lectures\Details.cshtml.g.cs
+C:\Users\sayee\source\repos\aspCoreTraining\aspCoreTraining\obj\Debug\netcoreapp3.1\Razor\Views\Lectures\Edit.cshtml.g.cs
