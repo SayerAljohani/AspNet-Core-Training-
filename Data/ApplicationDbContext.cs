@@ -18,5 +18,11 @@ namespace aspCoreTraining.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<LectureStudent> LectureStudents { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<LectureStudent>()
+                .HasAlternateKey(c => new { c.ApplicationUserId, c.LectureId}).HasName("IX_Lecture_student");
+        }
     }
 }
